@@ -29,9 +29,9 @@ int Elements::compare(int a, int b){
 
 void Elements::swap(int a, int b){
     swaps++;
-    Item tmp = elements[a];
-    elements[a] = elements[b];
-    elements[b] = tmp;
+    int tmp = elements[a].value;
+    elements[a].value = elements[b].value;
+    elements[b].value = tmp;
 }
 
 void Elements::reset(){

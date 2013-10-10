@@ -3,7 +3,7 @@
 #define ELEMENTS_H
 class Elements {
 public:
-    enum Status {None, Key};
+    enum Status {None, Key, Search, Sorted};
     struct Item {
         int value;
         Status state;
