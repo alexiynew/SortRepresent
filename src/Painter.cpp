@@ -1,9 +1,10 @@
 #include "Painter.h"
+#include "Sort.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <string>
 
-Painter::Painter():info {} {
+Painter::Painter() {
 
 }
 
@@ -23,28 +24,29 @@ void Painter::CreateWindow(const char* name, int w, int h) {
 }
 
 
-void Painter::setColor(int ci) {
+void Painter::setColor(Status st) {
     struct {
         float r, g, b;
     } Colors [] {
         {0.3f, 0.3f, 0.3f},
         {0.1f, 0.8f, 0.3f},
         {0.9f, 0.3f, 0.2f},
-        {0.2f, 0.3f, 0.5f}
+        {0.2f, 0.3f, 0.5f},
+        {0.4f, 0.5f, 0.3f}
     };
-
+    int ci = static_cast<int>(st);
     glColor3f(Colors[ci].r, Colors[ci].g, Colors[ci].b);
 }
 
-void Painter::draw(Elements& el) {
+void Painter::draw(std::vector<Item>& el) {
     w_Width = glutGet(GLUT_WINDOW_WIDTH);
     w_Height = glutGet(GLUT_WINDOW_HEIGHT);
-    int N = el.Count();
+    int N = el.size();
     float scale = 1.0f / N;
     if(w_Width <= N) {
         glBegin(GL_LINES);
         for(int i = 0; i<N; i++) {
-            setColor(el[i].state);
+            setColor(el[i].status);
             glVertex2f(i*scale, 0);
             glVertex2f(i*scale, el[i].value*scale);
         }
@@ -52,7 +54,7 @@ void Painter::draw(Elements& el) {
     } else {
         glBegin(GL_QUADS);
         for(int i = 0; i<N; i++) {
-            setColor(el[i].state);
+            setColor(el[i].status);
             glVertex2f((i+1)*scale, 0);
             glVertex2f((i+1)*scale, el[i].value*scale);
             glVertex2f((i+0.1)*scale, el[i].value*scale);
@@ -63,15 +65,7 @@ void Painter::draw(Elements& el) {
 }
 
 
-void Painter::showInfo() {
-    std::string str = "";
-    str += "Name: " + info.name + "\n";
-    str += "Status: " + (!info.done ? std::string("Running") : std::string("Done")) + "\n";
-    str += "Comparisons: " + std::to_string(info.comparsions) + "\n";
-    str += "Swaps: " + std::to_string(info.swaps) + "\n";
-    str += "Time span: " + std::to_string(info.time_span) + "\n";
-
-
+void Painter::showInfo(const std::string str) {
     glColor3f(1,1,1);
     print_str(str.c_str(), 2.0/w_Width, 1-10.0/w_Height);
 }

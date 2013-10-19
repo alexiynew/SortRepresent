@@ -1,32 +1,22 @@
 #ifndef PAINTER_H
 #define PAINTER_H
-#include "Elements.h"
+#include "Sort.h"
 #include <string>
+#include <vector>
 
 class Painter {
 
 public:
     Painter();
     void CreateWindow(const char*, int , int);
-    void draw(Elements&);
-    struct Information {
-        double time_span;
-        int comparsions;
-        int swaps;
-        bool done;
-        std::string name;
-    };
-    Information& Info() {
-        return info;
-    }
-    void showInfo();
+    void draw(std::vector<Item>&);
+    void showInfo(const std::string info );
 
 private:
-    void setColor(int);
+    void setColor(Status);
     void drawRect(float, float, float, float);
     int w_Width;
     int w_Height;
-    Information info;
     void print_str(const char*, float, float);
 
 };

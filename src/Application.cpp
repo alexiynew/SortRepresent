@@ -1,78 +1,56 @@
 #include "Application.h"
-#include "Elements.h"
 #include "Painter.h"
+#include "Sort.h"
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include <chrono>
-
+#include <cstdlib>
+#include <iostream>
 
 namespace Application {
 
-using clock = std::chrono::high_resolution_clock;
-using time_point = std::chrono::high_resolution_clock::time_point;
+int dtime = 0;
 
-const int N = 100;
-
-Elements el(N);
 Painter p;
-time_point last_call = clock::now();
 
+std::vector<Item> el;
 
-void display() {
+Sort* sorts[]{
+    new MergeSort,
+    new SearchSort
+};
+
+void display(const Information& info){
     glClear(GL_COLOR_BUFFER_BIT);
     p.draw(el);
-    p.showInfo();
+
+    p.showInfo(info.toString());
     glutSwapBuffers();
 }
 
-struct {
+void display() {
+    display({});
+}
 
-    int mi = 0, curi = 0, scount = 0;
-    bool done = false;
+std::vector<Item> generate_Elements(int count){
+    std::vector<Item> elem;
+    for(int i=0;i<count; ++i)
+        elem.push_back({i+1, Status::None});
 
-    void operator()(Elements& elem){
-        if(done) return;
-        elem[curi].state = Elements::None;
-        elem[mi].state = Elements::None;
-        if(elem.compare(curi, mi) > 0){
-            mi = curi;
-        }
-        ++curi;
-
-        if(curi > elem.Count() - scount - 1){
-            elem.swap(mi, elem.Count() - scount - 1);
-            ++scount;
-            mi = 0; curi = 0;
-        }
-        if(scount == elem.Count())
-            done = true;
-
-        elem[mi].state = Elements::Key;
-        elem[curi].state = Elements::Search;
-        for(int i = elem.Count() - scount; i < elem.Count(); ++i)
-            elem[i].state = Elements::Sorted;
-
+    Item tmp;
+    for(int i = 0; i < count; i++) {
+        int index = rand()%count-1;
+        tmp = elem[i];
+        elem[i] = elem[index];
+        elem[index] = tmp;
     }
-} SearchSort;
+    return elem;
+}
 
-
-void timer(int val) {
-    p.Info().time_span = std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - last_call).count();
-
-    SearchSort(el);
-
-    p.Info().comparsions = el.Comparsions();
-    p.Info().swaps = el.Swaps();
-
-    p.Info().name = "SearchSort";
-    p.Info().done = SearchSort.done;
-
-
-
-    display();
-
-    last_call = clock::now();
-    glutTimerFunc(1000/120, timer, 0);
+void update(int d){
+    el = generate_Elements(10);
+    sorts[0]->sort(el, display);
+    el = generate_Elements(50);
+    sorts[1]->sort(el, display);
 }
 
 void init(int& argc, char* argv[]) {
@@ -80,14 +58,12 @@ void init(int& argc, char* argv[]) {
     p.CreateWindow(argv[0], 800, 480);
 
     glutDisplayFunc(display);
-    glutTimerFunc(1000/120, timer, 0);
-
-
-    el.shuffle();
+    glutTimerFunc(dtime, update, 0);
 
 }
 
-void run() {
+void run(int s) {
+    dtime = s;
     glutMainLoop();
 }
 

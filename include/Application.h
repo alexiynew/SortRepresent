@@ -5,7 +5,7 @@
 
 namespace Application {
 void init(int&, char**);
-void run();
+void run(int s = 0);
 }
 
 
