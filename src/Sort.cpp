@@ -46,60 +46,47 @@ std::string Information::toString()const{
 
 
 void MergeSort::sort(std::vector<Item>& elem, void(*display)(const Information&)){
-//    bool done = false;
     displayFunc = display;
-
-    mSort(elem, 0, elem.size()-1);
-
-    //display({comparsion, name});
+    mSort(elem, 0, elem.size() - 1);
 }
 
 std::vector<Item> MergeSort::mSort(std::vector<Item>& elem, int l, int r){
-    std::vector<Item> tmp;
-    int size = r-l;
-    if(size == 0){
-        tmp.push_back(elem[l]);
-        return tmp;
-    }
 
-    for(size_t i=l;i<elem.size();++i){
+    if(r == l) return {elem[l]};
+
+    for(int i=l;i<=r;++i)
         elem[i].status = Status::None;
-    }
 
-    std::vector<Item> left = mSort(elem, l, l+size/2);
-    std::vector<Item> right = mSort(elem, l+size/2 + 1, r);
+    int size = r-l + 1;
     int ll = l;
-    int rr = l+size/2+1;
+    int rr = l+size/2 ;
+
+    std::vector<Item> left = mSort(elem, l, rr - 1 );
+    std::vector<Item> right = mSort(elem, rr , r);
 
     auto li = left.begin();
     auto ri = right.begin();
 
+    std::vector<Item> tmp;
     while(li != left.end()){
         if(compare(*li, *ri) < 0 || ri == right.end()){
-            tmp.push_back(*li);
-            ++li;
-            elem[ll].status = Status::Key;
-            ll++;
+            tmp.push_back(*li++);
+            elem[ll++].status = Status::Key;
         } else {
             if(ri != right.end()){
-                tmp.push_back(*ri);
-                ++ri;
-                elem[rr].status = Status::Selected;
-                rr++;
+                tmp.push_back(*ri++);
+                elem[rr++].status = Status::Selected;
             }
         }
         displayFunc({comparsion, name});
     }
     while(ri != right.end()){
-        tmp.push_back(*ri);
-        ++ri;
-        elem[rr].status = Status::Selected;
-        rr++;
-
+        tmp.push_back(*ri++);
+        elem[rr++].status = Status::Selected;
         displayFunc({comparsion, name});
     }
 
-    for(int i=0;i<=size;++i){
+    for(size_t i=0; i<tmp.size(); ++i){
         elem[l+i] = tmp[i];
         elem[l+i].status = Status::Sorted;
     }

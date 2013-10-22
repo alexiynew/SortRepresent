@@ -14,10 +14,7 @@ struct Item {
 };
 
 struct Information {
-   // double time_span;
     int comparsions;
-    //int swaps;
-    //bool done;
     std::string name;
 
     std::string toString()const;
@@ -25,9 +22,7 @@ struct Information {
 
 class Sort {
     public:
-        Sort(): name{"No sort"}{};
         virtual void sort(std::vector<Item>&, void(*)(const Information&))=0;
-        std::string Name(){return name;}
     protected:
         std::string name;
         int comparsion;
@@ -37,25 +32,18 @@ class Sort {
 
 class SearchSort : public Sort {
     public:
-        SearchSort(){
-            name = {"SearchSort"};
-        }
+        SearchSort(){name = {"SearchSort"};}
         void sort(std::vector<Item>&, void(*)(const Information&));
-
 };
 
 
 class MergeSort : public Sort {
     public:
-        MergeSort(){
-            name = {"MergeSort"};
-        }
+        MergeSort(){name = {"MergeSort"};}
         void sort(std::vector<Item>&, void(*)(const Information&));
     private:
         void(* displayFunc)(const Information&);
         std::vector<Item> mSort(std::vector<Item>&, int , int);
-   //     std::vector<Item> merge(const std::vector<Item>&, const std::vector<Item>&);
-
 };
 
 #endif // SORT_H

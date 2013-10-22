@@ -38,7 +38,7 @@ std::vector<Item> generate_Elements(int count){
 
     Item tmp;
     for(int i = 0; i < count; i++) {
-        int index = rand()%count-1;
+        int index = rand()%(count-1);
         tmp = elem[i];
         elem[i] = elem[index];
         elem[index] = tmp;
@@ -47,9 +47,9 @@ std::vector<Item> generate_Elements(int count){
 }
 
 void update(int d){
-    el = generate_Elements(10);
+    el = generate_Elements(40);
     sorts[0]->sort(el, display);
-    el = generate_Elements(50);
+    el = generate_Elements(40);
     sorts[1]->sort(el, display);
 }
 
