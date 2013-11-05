@@ -65,12 +65,20 @@ void Painter::draw(std::vector<Item>& el) {
 }
 
 
-void Painter::showInfo(const std::string str) {
+void Painter::showInfo(const Information& info) {
     glColor3f(1,1,1);
-    print_str(str.c_str(), 2.0/w_Width, 1-10.0/w_Height);
+    print_str(info.toString().c_str(), 2.0/w_Width, 1-10.0/w_Height);
 }
 
 void Painter::print_str(const char* s, float x, float y) {
     glRasterPos2f(x, y);
     glutBitmapString(GLUT_BITMAP_HELVETICA_10, reinterpret_cast<const unsigned char*>(s));
+}
+
+
+std::string Information::toString()const {
+    std::string str = "";
+    str += "Name: " + name + "\n";
+    str += "Comparisons: " + std::to_string(comparsions) + "\n";
+    return str;
 }

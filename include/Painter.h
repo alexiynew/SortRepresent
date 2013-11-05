@@ -4,13 +4,23 @@
 #include <string>
 #include <vector>
 
+struct Information {
+    Information(std::string n, int c) {
+        name = n;
+        comparsions = c;
+    }
+    int comparsions;
+    std::string name;
+    std::string toString()const;
+};
+
 class Painter {
 
 public:
     Painter();
     void CreateWindow(const char*, int , int);
     void draw(std::vector<Item>&);
-    void showInfo(const std::string info );
+    void showInfo(const Information& );
 
 private:
     void setColor(Status);

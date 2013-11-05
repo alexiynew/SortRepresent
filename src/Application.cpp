@@ -14,48 +14,69 @@ Painter p;
 
 std::vector<Item> el;
 
-Sort* sorts[]{
+Sort* sorts[] {
+    new RadxSort,
+    new ShellSort,
+    new InsertionSort,
+    new CombSort,
+    new ShakerSort,
+    new HeapSort,
+    new QuickSort,
+    new BubbleSort,
     new MergeSort,
-    new SearchSort
+    new SelectionSort
 };
 
-void display(const Information& info){
+int s_size = sizeof(sorts) / sizeof(Sort*);
+
+int cur_sort = 0;
+
+void display() {
     glClear(GL_COLOR_BUFFER_BIT);
     p.draw(el);
 
-    p.showInfo(info.toString());
+    if(cur_sort < s_size) {
+        p.showInfo({sorts[cur_sort]->Name(), sorts[cur_sort]->Comparsion()});
+    }
+
     glutSwapBuffers();
 }
 
-void display() {
-    display({});
-}
-
-std::vector<Item> generate_Elements(int count){
-    std::vector<Item> elem;
-    for(int i=0;i<count; ++i)
-        elem.push_back({i+1, Status::None});
-
+void generate_Elements(int count) {
+    el.clear();
+    for(int i=0; i<count; ++i)
+        el.push_back({i+1, Status::None});
+    srand(time(0));
     Item tmp;
     for(int i = 0; i < count; i++) {
         int index = rand()%(count-1);
-        tmp = elem[i];
-        elem[i] = elem[index];
-        elem[index] = tmp;
+        tmp = el[i];
+        el[i] = el[index];
+        el[index] = tmp;
     }
-    return elem;
 }
 
-void update(int d){
-    el = generate_Elements(40);
-    sorts[0]->sort(el, display);
-    el = generate_Elements(40);
-    sorts[1]->sort(el, display);
+void update(int d) {
+
+    if(cur_sort < s_size) {
+        if(sorts[cur_sort]->sort(el)) {
+            cur_sort++;
+            if(cur_sort < s_size) {
+                generate_Elements(40);
+            }
+        }
+    }
+
+    display();
+
+    glutTimerFunc(dtime, update, 0);
 }
 
 void init(int& argc, char* argv[]) {
     glutInit(&argc, argv);
     p.CreateWindow(argv[0], 800, 480);
+
+    generate_Elements(40);
 
     glutDisplayFunc(display);
     glutTimerFunc(dtime, update, 0);
